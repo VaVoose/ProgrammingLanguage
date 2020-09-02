@@ -41,14 +41,22 @@
 #/usr/bin/python3
 
 import re
+import sys
 
 class Lexer:
 
     def __init__(self, f):
         self.f = f
+        self.lineNumber = 0
 
     def printFile(self):
         print(self.f)
+
+    def next(self):
+        lineNumber = lineNumber + 1
+        curLine = f.readline()
+        print(curLine)
+        
 
 
 

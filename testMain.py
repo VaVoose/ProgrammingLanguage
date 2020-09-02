@@ -25,8 +25,8 @@ def main():
             print("File not found/read")
 
     #instantiate a lexer and print the file that it has
-    l = lexer.Lexer(readFile)
-    l.printFile()
+    lex = lexer.Lexer(readFile)
+    lex.next()
 
 #Runs the main function first
 if __name__ == "__main__":
