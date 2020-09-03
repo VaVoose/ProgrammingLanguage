@@ -7,9 +7,6 @@
     This is the lexer class for our programming language implementation
     Requirements:
     1. Be implemented using Python3
-    2. Read an input file and output all tokens
-        a. Input file name is given as an argument when typing a command line
-        b. Proper exception handling to handle wrong file name or if the file does not exists.
     3. Recognize the following tokens:
         a. Keywords: main, int, float, char, if, else, true, false
         b. Terminal Literals: integer numbers, real numbers, true and false. An
@@ -21,7 +18,7 @@
     4. Single line comments must be removed. Comments begin with //
     5. Remove all whitespaces
     6. Output all tokens in a readable format as follows:
-        Line # Value Token Category 
+        Line# Value Token Category 
         --------------------------------------------------------
         1   int   keyword
         1   main  keyword
@@ -43,22 +40,89 @@
 import re
 import sys
 
+KEYWORDS = {
+    "main": "keyword",
+    "int": "keyword",
+    "float": "keyword",
+    "char": "keyword",
+    "if": "keyword",
+    "else": "keyword",
+    "true": "keyword",
+    "false": "keyword"
+}
+
+#Note to team, not sure how to do these but I know this is how you write a int and real num with the re library
+TERMINALS = ["[0-9]+", "[0-9]+/.[0-9]"]
+
+OPERATORS = {
+    "+": "add_op",
+    "-": "sub_op",
+    "*": "mult_op",
+    "/": "div_op",
+    "!": "not_op",
+    ">": "gt_op",
+    ">=": "gte+op",
+    "<": "lt_op",
+    "<=": "lte_op",
+    "||": "or_op",
+    "&&": "and_op"
+}
+
+PUNCTUATIONS = {
+    ";": "semicolon",
+    ",": "comma",
+    "{": "l_curly",
+    "}": "r_curly",
+    "(": "l_paren",
+    ")": "r_paren"
+    }
+
 class Lexer:
 
+    """
+    Default Lexer Constructor
+    param f: the file that was read
+    """
     def __init__(self, f):
         self.f = f
         self.lineNumber = 0
+        self.tokenQueue = []
 
-    def printFile(self):
-        print(self.f)
-
+    """
+    Returns the next [lineNumber, value, token category] of the file
+    """
     def next(self):
-        lineNumber = lineNumber + 1
-        curLine = f.readline()
-        print(curLine)
-        
+        #if the token queue is empty
+        if(self.tokenQueue == []):
+            #Read another line from the file and increment line counter
+            try:
+                curLine = self.f.readline()
+            except:
+                self.tokenQueue.append(["EOF", "EOF", "EOF"])
+    
+            self.lineNumber = self.lineNumber + 1
+            #Split the words of the line
+            splitWords = re.split('\s', curLine)
+            #Lex each word in the line
+            for word in splitWords:
+                #print(word)
+                self.lex(word)
 
+        print(self.tokenQueue)
+        #return the next pair
+        return (self.tokenQueue.pop(0))
 
-
-
-
+    """
+    Determines the category of the next token and 
+    pushes the next [lineNumber, value, token category] pair to the queue
+    param word: the current word being lexed
+    """
+    def lex(self, word):
+        if (word in KEYWORDS):
+            self.tokenQueue.append([self.lineNumber, word, KEYWORDS[word]])
+        elif(word in OPERATORS):
+            self.tokenQueue.append([self.lineNumber, word, OPERATORS[word]])
+        elif(word in PUNCTUATIONS):
+            self.tokenQueue.append([self.lineNumber, word, PUNCTUATIONS[word]])
+        else:
+            self.tokenQueue.append([self.lineNumber, word, "unknown"])
