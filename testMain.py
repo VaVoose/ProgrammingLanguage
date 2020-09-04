@@ -30,11 +30,16 @@ def main():
 
     #instantiate a lexer and print the file that it has
     lex = lexer.Lexer(f)
-    print(lex.next())
-    print(lex.next())
-    print(lex.next())
-    print(lex.next())
-    
+    lex.generateTokens()
+    print("Line #          Value          Token Category")
+    print("---------------------------------------------")
+    #Turn into loop while not EOF
+    while True:
+        token = lex.next()
+        if (token == "EOF"): break
+        
+        print('{:<15} {:15} {:<20}'.format(token[0], token[1], token[2]))
+
 
 #Runs the main function first
 if __name__ == "__main__":

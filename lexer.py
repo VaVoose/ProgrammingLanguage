@@ -51,17 +51,19 @@ KEYWORDS = {
     "false": "keyword"
 }
 
-#Note to team, not sure how to do these but I know this is how you write a int and real num with the re library
-TERMINALS = ["[0-9]+", "[0-9]+/.[0-9]"]
+INTEGERS = "\d+$"
+REALNUMS = "\d+\.\d+$"
+IDENTIFIER = "\[A-Za-z_]+[A-Za-z_0-9]*"
 
 OPERATORS = {
     "+": "add_op",
     "-": "sub_op",
     "*": "mult_op",
     "/": "div_op",
+    "=": "assign_op",
     "!": "not_op",
     ">": "gt_op",
-    ">=": "gte+op",
+    ">=": "gte_op",
     "<": "lt_op",
     "<=": "lte_op",
     "||": "or_op",
@@ -88,29 +90,29 @@ class Lexer:
         self.lineNumber = 0
         self.tokenQueue = []
 
-    """
-    Returns the next [lineNumber, value, token category] of the file
-    """
-    def next(self):
-        #if the token queue is empty
-        if(self.tokenQueue == []):
-            #Read another line from the file and increment line counter
-            try:
-                curLine = self.f.readline()
-            except:
-                self.tokenQueue.append(["EOF", "EOF", "EOF"])
-    
+    def generateTokens(self):
+        for curLine in self.f:
             self.lineNumber = self.lineNumber + 1
-            #Split the words of the line
             splitWords = re.split('\s', curLine)
             #Lex each word in the line
             for word in splitWords:
                 #print(word)
+                if (not word):
+                    continue
+                elif (re.match("//", word)):
+                    break
                 self.lex(word)
 
-        print(self.tokenQueue)
-        #return the next pair
-        return (self.tokenQueue.pop(0))
+
+    """
+    Returns the next [lineNumber, value, token category] of the file
+    """
+    def next(self):
+        if (self.tokenQueue): 
+            return self.tokenQueue.pop(0)
+
+        return "EOF"
+
 
     """
     Determines the category of the next token and 
@@ -124,5 +126,9 @@ class Lexer:
             self.tokenQueue.append([self.lineNumber, word, OPERATORS[word]])
         elif(word in PUNCTUATIONS):
             self.tokenQueue.append([self.lineNumber, word, PUNCTUATIONS[word]])
+        elif(re.match(INTEGERS, word)):
+            self.tokenQueue.append([self.lineNumber, word, "integer"])
+        elif(re.match(REALNUMS, word)):
+            self.tokenQueue.append([self.lineNumber, word, "real"])
         else:
             self.tokenQueue.append([self.lineNumber, word, "unknown"])
