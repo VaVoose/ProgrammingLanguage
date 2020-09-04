@@ -48,12 +48,13 @@ KEYWORDS = {
     "if": "keyword",
     "else": "keyword",
     "true": "keyword",
-    "false": "keyword"
+    "false": "keyword",
+    "bool": "keyword"
 }
 
 INTEGERS = "\d+$"
 REALNUMS = "\d+\.\d+$"
-IDENTIFIER = "\[A-Za-z_]+[A-Za-z_0-9]*"
+IDENTIFIER = "[A-Za-z_]+[A-Za-z_0-9]*"
 
 OPERATORS = {
     "+": "add_op",
@@ -130,5 +131,7 @@ class Lexer:
             self.tokenQueue.append([self.lineNumber, word, "integer"])
         elif(re.match(REALNUMS, word)):
             self.tokenQueue.append([self.lineNumber, word, "real"])
+        elif(re.match(IDENTIFIER, word)):
+            self.tokenQueue.append([self.lineNumber, word, "identifier"])
         else:
             self.tokenQueue.append([self.lineNumber, word, "unknown"])
