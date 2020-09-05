@@ -7,7 +7,7 @@
     This is the lexer class for our programming language implementation
     Requirements:
     1. Be implemented using Python3
-    3. Recognize the following tokens:
+    2. Recognize the following tokens:
         a. Keywords: main, int, float, char, if, else, true, false
         b. Terminal Literals: integer numbers, real numbers, true and false. An
             integer number is defined as a sequence of digits (0..9). 
@@ -15,9 +15,9 @@
             followed by a sequence of digits (.9 and 9.0.5 are not allowed).
         c. Operators:+-*/!>>=<<=||&&
         d. Punctuations: ; , { } ( )
-    4. Single line comments must be removed. Comments begin with //
-    5. Remove all whitespaces
-    6. Output all tokens in a readable format as follows:
+    3. Single line comments must be removed. Comments begin with //
+    4. Remove all whitespaces
+    5. Output all tokens in a readable format as follows:
         Line# Value Token Category 
         --------------------------------------------------------
         1   int   keyword
@@ -28,10 +28,8 @@
         3   =     assignment_op
         3   ;     semicolon
         4   2y    unknown
-    7. All classes and functions are properly documented including purpose and preconditions.
-    8. Have a function named next, (i.e. next() ), that outputs a single token. This function will be used later in the Parser project.
-    9. Your program must be organized. Your main function must be in a separate file
-        ( if name == "__main__:"), the output must be produced from the main function using the next() function.
+    6. All classes and functions are properly documented including purpose and preconditions.
+    7. Have a function named next, (i.e. next() ), that outputs a single token. This function will be used later in the Parser project.
 """
 
 #Using python3
@@ -40,6 +38,7 @@
 import re
 import sys
 
+#Keyword dictionary
 KEYWORDS = {
     "main": "keyword",
     "int": "keyword",
@@ -52,10 +51,7 @@ KEYWORDS = {
     "bool": "keyword"
 }
 
-INTEGERS = "\d+$"
-REALNUMS = "\d+\.\d+$"
-IDENTIFIER = "[A-Za-z_]+[A-Za-z_0-9]*"
-
+#Operator dictionary
 OPERATORS = {
     "+": "add_op",
     "-": "sub_op",
@@ -71,6 +67,7 @@ OPERATORS = {
     "&&": "and_op"
 }
 
+#Punctuation dictionary
 PUNCTUATIONS = {
     ";": "semicolon",
     ",": "comma",
@@ -79,6 +76,11 @@ PUNCTUATIONS = {
     "(": "l_paren",
     ")": "r_paren"
     }
+
+#RegEx expressions for integers real numbers and identifiers
+INTEGERS = r"\d+$"
+REALNUMS = r"\d+\.\d+$"
+IDENTIFIER = r"[A-Za-z_]+[A-Za-z_0-9]*"
 
 class Lexer:
 
@@ -90,11 +92,15 @@ class Lexer:
         self.f = f
         self.lineNumber = 0
         self.tokenQueue = []
+        self.generateTokens()
 
+    """
+    Generates all tokens from a passed in file
+    """
     def generateTokens(self):
         for curLine in self.f:
             self.lineNumber = self.lineNumber + 1
-            splitWords = re.split('\s', curLine)
+            splitWords = re.split(r'\s', curLine)
             #Lex each word in the line
             for word in splitWords:
                 #print(word)
@@ -104,7 +110,6 @@ class Lexer:
                     break
                 self.lex(word)
 
-
     """
     Returns the next [lineNumber, value, token category] of the file
     """
@@ -113,7 +118,6 @@ class Lexer:
             return self.tokenQueue.pop(0)
 
         return "EOF"
-
 
     """
     Determines the category of the next token and 

@@ -10,6 +10,8 @@
     1. Read an input file and output all tokens
         a. Input file name is given as an argument when typing a command line
         b. Proper exception handling to handle wrong file name or if the file does not exists.
+    2. Your program must be organized. Your main function must be in a separate file
+        ( if name == "__main__:"), the output must be produced from the main function using the next() function.
 """
 
 #/usr/bin/python3
@@ -17,6 +19,9 @@
 import lexer
 import sys
 
+"""
+Main testing function of the program, controls the logic of the program
+"""
 def main():
     #While invalid file
     while True:
@@ -30,10 +35,10 @@ def main():
 
     #instantiate a lexer and print the file that it has
     lex = lexer.Lexer(f)
-    lex.generateTokens()
+    
     print("Line #          Value          Token Category")
     print("---------------------------------------------")
-    #Turn into loop while not EOF
+    #While their are tokens in the queue obtain and print the next token
     while True:
         token = lex.next()
         if (token == "EOF"): break
