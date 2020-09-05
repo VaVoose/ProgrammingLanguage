@@ -12,17 +12,17 @@ which will be added to a list. This token information includes the token's line 
 operators, and punctuation.
 
 The main function of testMain.py will ask the user to enter the name of a file to be read which will be sent to the lexer. A lexer object, lex is initalized by calling 
-lexer.lexer(f) which creates a new lexer with the parameter as the file being read. The function lex.generateTokens() will then be called to traverse the file and send 
-words to be lexed. The lexed words will then be added to a list. Finally, the main function will loop until every token is popped from the list, thereby printing the 
-result of every token in the file.
+lexer.lexer(f) which creates a new lexer with the parameter as the file being read. The main function will then loop until every token is popped from the list of tokens, 
+thereby printing the result of every token in the file.
 
 The lexer class has a few dictionaries: Keywords, Operators, and Punctuations. These dictionaries hold the existing names and strings of the corresponding dictionary 
-used for token categorization.
+used for token categorization. The lexer also has regular expressions to match patterns for integers, real numbers, and identifiers also used for token categorization.
 
 The lexer class also contains the following functions:
 
      __init__ takes the parameters of self (The Lexer) and the file being read. This function initializes the lexer and will allow the lexer to have the file: f, 
-     the line number: lineNumber, and a list of tokens: tokenQueue. This will allow the lexer to access this information in the other functions of the lexer.
+     the line number: lineNumber, and a list of tokens: tokenQueue. This will allow the lexer to access this information in the other functions of the lexer. The function
+     generateTokens will then be called to traverse the file for tokens.
 
      generateTokens takes only the lexer as a parameter: self. This function will traverse every line of the file stored in lexer and will then tokenize every word in 
      each line. Each word will then be sent to lex() in order to complete the tokenization.
