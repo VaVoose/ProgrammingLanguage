@@ -100,7 +100,7 @@ class Lexer:
     def generateTokens(self):
         for curLine in self.f:
             self.lineNumber = self.lineNumber + 1
-            splitWords = re.split(r'\s', curLine)
+            splitWords = re.split(r'\s|([:;,(){}]|//|==|!=|<=|>=|\+=|-=|\*=|/=|&&|\|\||=|>|<|\*|/|\+\+|--|%|\+|-|!)', curLine)
             #Lex each word in the line
             for word in splitWords:
                 #print(word)
