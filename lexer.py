@@ -98,17 +98,27 @@ class Lexer:
     Generates all tokens from a passed in file
     """
     def generateTokens(self):
+        comment = 0
         for curLine in self.f:
             self.lineNumber = self.lineNumber + 1
-            splitWords = re.split(r'\s|([:;,(){}]|//|==|!=|<=|>=|\+=|-=|\*=|/=|&&|\|\||=|>|<|\*|/|\+\+|--|%|\+|-|!)', curLine)
+            splitWords = re.split(r'\s|([:;,(){}]|//|\*/|/\*|==|!=|<=|>=|\+=|-=|\*=|/=|&&|\|\||=|>|<|\*|/|\+\+|--|%|\+|-|!)', curLine)
             #Lex each word in the line
             for word in splitWords:
                 #print(word)
                 if (not word):
                     continue
+                #Do not tokenize words within comments
                 elif (re.match("//", word)):
                     break
-                self.lex(word)
+                elif (re.match(r"/\*", word)):
+                    comment = 1
+                    print("TEST")
+                    break
+                elif (re.match(r"\*/", word)):
+                    comment = 0
+                    continue
+                if (comment == 0):
+                    self.lex(word)
 
     """
     Returns the next [lineNumber, value, token category] of the file
