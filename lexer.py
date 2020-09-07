@@ -112,7 +112,6 @@ class Lexer:
                     break
                 elif (re.match(r"/\*", word)):
                     comment = 1
-                    print("TEST")
                     break
                 elif (re.match(r"\*/", word)):
                     comment = 0
