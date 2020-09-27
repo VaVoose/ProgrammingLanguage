@@ -56,7 +56,7 @@ def main():
 
 
     #Below this is old code
-    print("Remaining Tokens")
+    print("\nRemaining Tokens")
     
     print("Line #          Value          Token Category")
     print("---------------------------------------------")
@@ -67,6 +67,11 @@ def main():
         
         print('{:<15} {:15} {:<20}'.format(token[0], token[1], token[2]))
 
+'''
+Returns ERR if there was an error,
+if an error occurs within the scope it prints what went wrong
+Returns SUCCESS if it completed parsing without errors
+'''
 def program():
     global lex
 
@@ -108,17 +113,28 @@ def program():
 
 '''
 Im not sure how to repeat this correctly
+
+Infinite loops until the declaration function returns BRK which breaks from the infinite loop <- this probably doesn't work for final implementation
+
+Returns ERR if there was an error in declaration
+Returns CONT if there are no more declarations
 '''
 def declarations():
     global lex
 
     while(True):
-        tok = declaration()
-        if (tok == ERR): return ERR
-        elif (tok == BRK): break
+        result = declaration()
+        if (result == ERR): return ERR
+        elif (result == BRK): break
 
     return CONT
 
+'''
+Returns ERR if there was an error,
+if the error is in scope it prints the error
+Returns BRK if there are no more declarations
+Returns CONT if there are more declarations
+'''
 def declaration():
     global lex
 
@@ -135,6 +151,7 @@ def declaration():
         else:
             print("Missing ']' in optional integer in declaration")
             return ERR
+    #If not check for a comma
     else:
         while(True):
             if (tok[VALUE] == ","):
@@ -159,6 +176,10 @@ def declaration():
         print("Missing Semicolon in declaration")
         return ERR
     
+'''
+Returns CONT if there was a successful read
+Returns ERR if there was an error
+'''
 def Type():
     global lex
 
@@ -174,12 +195,16 @@ def Type():
 '''
 This is the only way to do this?
 There doesn't need to be a seperate function for "letter" in this case because the lexer already determines that its a identifier?
+
+Returns CONT if successfull read
+Returns ERR if there was an error
 '''
 def identifier():
     global lex
 
     tok = lex.next()
 
+    #Check token category if it has been determined to be an identifier
     if (tok[CATEGORY] == "identifier"):
         print(tok[VALUE], " read")
         return CONT
@@ -189,11 +214,15 @@ def identifier():
 
 '''
 Running into a similar situation with integer as I did with letter
+
+Returns CONT on successful read
+Returns ERR if there was an error
 '''
 def integer():
     global lex
 
     tok = lex.next()[VALUE]
+    #Checks to see if the token is a digit
     if (tok.isdigit()):
         print(tok, " read")
         return CONT
@@ -201,9 +230,15 @@ def integer():
         print("Invlid Integer")
         return ERR
 
+'''
+Not Currenlty used
+'''
 def letter():
     return CONT
 
+'''
+Not implemented
+'''
 def statements():
     return BRK
 
