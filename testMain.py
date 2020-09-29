@@ -17,7 +17,7 @@
 #/usr/bin/python3
 
 import lexer
-import parser
+import parse
 import sys
 
 ERR = -1
@@ -41,7 +41,7 @@ def main():
 
     #instantiate a lexer and print the file that it has
     lex = lexer.Lexer(f)
-    par = parser.Parser(lex)
+    par = parse.Parse(lex)
 
     result = par.program()
     if (result == SUCCESS):

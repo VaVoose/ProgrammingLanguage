@@ -18,7 +18,7 @@ CONT = 1
 #A successful parse with no errors
 SUCCESS = 2
 
-class Parser:
+class Parse:
 
     def __init__(self, lexer):
         self.lex = lexer
