@@ -45,6 +45,7 @@ class Parse:
                         self.token = self.lex.next()
                         if (self.token[VALUE] == "{"):
                             print("{ read")
+                            self.token  = self.lex.next()
                             if (self.declarations() == ERR): 
                                 return ERR
                             if (self.statements() == ERR): 
@@ -103,42 +104,43 @@ class Parse:
 
         if (self.identifier() == ERR): return ERR
         
-        self.token = self.lex.next()
-        
         #If there is a square bracket -> integer + "]"
         if (self.token[VALUE] == "["):
-            if (self.integer() == ERR): return ERR
+            print("[ read")
             self.token = self.lex.next()
+            if (self.integer() == ERR): return ERR
             if (self.token[VALUE] == "]"):
+                print("] read")
+                self.token = self.lex.next()
                 pass
             else:
                 print("Missing ']' in optional integer in declaration at line ", self.token[LINENUMBER])
                 return ERR
         #If not check for a comma
-        else:
-            while(True):
-                if (self.token[VALUE] == ","):
-                    print(", read")
-                    if (self.identifier() == ERR): return ERR
+        #else:
+        while(True):
+            if (self.token[VALUE] == ","):
+                print(", read")
+                self.token = self.lex.next()
+                if (self.identifier() == ERR): return ERR                  
+                if (self.token[VALUE] == "["):
+                    print("[ read")
                     self.token = self.lex.next()
-                    
-                    if (self.token[VALUE] == "["):
-                        print("[ read")
-                        if (self.integer() == ERR): return ERR
+                    if (self.integer() == ERR): return ERR
+                    if (self.token[VALUE] == "]"):
+                        print("] read")
                         self.token = self.lex.next()
-                        if (self.token[VALUE] == "]"):
-                            print("] read")
-                            self.token = self.lex.next()
-                        else:
-                            print("Missing ']' in optional integer in declaration at line ", self.token[LINENUMBER])
-                            return ERR
                     else:
-                        print("Missing '[' in optional integer in declration at line ", self.token[LINENUMBER])
+                        print("Missing ']' in optional integer in declaration at line ", self.token[LINENUMBER])
                         return ERR
                 else:
-                    break
+                    #print("Missing '[' in optional integer in declration at line ", self.token[LINENUMBER])
+                    continue
+            else:
+                break
         if (self.token[VALUE] == ";"):
             print("; read")
+            self.token = self.lex.next()
             return CONT
         else:
             print("Missing Semicolon in declaration at line ", self.token[LINENUMBER])
@@ -149,11 +151,10 @@ class Parse:
     Returns ERR if there was an error
     '''
     def Type(self):
-
-        self.token = self.lex.next()
         
         if (self.token[VALUE] == "bool" or self.token[VALUE] == "int" or self.token[VALUE] == "float" or self.token[VALUE] == "char"):
             print(self.token[VALUE], " read")
+            self.token  = self.lex.next()
             return CONT
         else:
             print("Invalid type at line ", self.token[LINENUMBER], " - moving into statements")
@@ -167,10 +168,10 @@ class Parse:
     '''
     def identifier(self):
 
-        self.token = self.lex.next()
         #Check token category if it has been determined to be an identifier
         if (self.token[CATEGORY] == "identifier"):
             print(self.token[VALUE], " read")
+            self.token = self.lex.next()
             return CONT
         else:
             print("Invalid identifier at line ", self.token[LINENUMBER])
@@ -184,10 +185,10 @@ class Parse:
     '''
     def integer(self):
 
-        self.token = self.lex.next()
         #Checks to see if the token is a digit
         if (self.token[VALUE].isdigit()):
             print(self.token[VALUE], " read")
+            self.token = self.lex.next()
             return CONT
         else:
             print("Invlid Integer at line ", self.token[LINENUMBER])
@@ -200,6 +201,12 @@ class Parse:
         return CONT
 
     '''
+    Not Currently used
+    '''
+    def digit(self):
+        return CONT
+    '''
+
     Returns ERR if there was an error
     Returns CONT if there was no errors
     '''
@@ -247,7 +254,6 @@ class Parse:
             print("{ read inside block")
             self.token = self.lex.next()
             if (self.statements() == ERR): return ERR
-            #self.token = self.lex.next()
             if (self.token[VALUE] == "}"):
                 print('} read - inside block')
                 self.token = self.lex.next()
@@ -263,6 +269,8 @@ class Parse:
 
     '''
     def assignment(self):
+        
+        
         return BRK
 
     def ifStatement(self):

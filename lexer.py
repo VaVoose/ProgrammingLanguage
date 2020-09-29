@@ -101,7 +101,7 @@ class Lexer:
         comment = 0
         for curLine in self.f:
             self.lineNumber = self.lineNumber + 1
-            splitWords = re.split(r'\s|([:;,(){}]|//|\*/|/\*|==|!=|<=|>=|\+=|-=|\*=|/=|&&|\|\||=|>|<|\*|/|\+\+|--|%|\+|-|!)', curLine)
+            splitWords = re.split(r'\s|([\[\]:;,(){}]|//|\*/|/\*|==|!=|<=|>=|\+=|-=|\*=|/=|&&|\|\||=|>|<|\*|/|\+\+|--|%|\+|-|!)', curLine)
             #Lex each word in the line
             for word in splitWords:
                 #print(word)
@@ -112,7 +112,7 @@ class Lexer:
                     break
                 elif (re.match(r"/\*", word)):
                     comment = 1
-                    break
+                    continue
                 elif (re.match(r"\*/", word)):
                     comment = 0
                     continue
