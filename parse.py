@@ -194,19 +194,33 @@ class Parse:
             print("Invlid Integer at line ", self.token[LINENUMBER])
             return ERR
 
-    '''
-    Not Currenlty used
-    '''
-    def letter(self):
+    def boolean(self):
+        if (self.token[VALUE] == "true" or self.token[VALUE] == "false"):
+            print(self.token[VALUE], " read")
+            self.token = self.lex.next()
+            return CONT
+        else:
+            print("reading boolean failed")
+            return ERR
+
+    def Float(self):
+        if (self.integer() == ERR): return ERR
+        if (self.token[VALUE] == "."):
+            print(". read")
+            self.token = self.lex.next()
+            if (self.integer() == ERR): return ERR
+        else:
+            print("missing . in float at line ", self.token[VALUE])
+            return ERR
         return CONT
 
-    '''
-    Not Currently used
-    '''
-    def digit(self):
-        return CONT
-    '''
+    def char(self):
+        if (self.token[VALUE].isascii() and len(self.token[VALUE]) == 1): return CONT
+        else:
+            print("ASCII character not found at line ", self.token[LINENUMBER])
+            return ERR
 
+    '''
     Returns ERR if there was an error
     Returns CONT if there was no errors
     '''
@@ -231,16 +245,16 @@ class Parse:
         #elif (result == CONT): pass
         #test for Assignment
         result = self.assignment()
-        if (result == ERR): return ERR
+        #if (result == ERR): return ERR
         if (result == CONT): return CONT
         #test for IfStatement
-        #result = self.ifStatement()
-        #if (result == ERR): return ERR
-        #if (result == CONT): return CONT
+        result = self.ifStatement()
+        if (result == ERR): return ERR
+        if (result == CONT): return CONT
         #test for WhileStatement
-        #result = self.whileStatement()
-        #if (result == ERR): return ERR
-        #if (result == CONT): return CONT
+        result = self.whileStatement()
+        if (result == ERR): return ERR
+        if (result == CONT): return CONT
         #If its none of the above return BRK
         return BRK
 
@@ -269,12 +283,248 @@ class Parse:
 
     '''
     def assignment(self):
-        
-        
+        if (self.identifier() == ERR): return ERR
+        if (self.token[VALUE] == "["):
+            print("[ read")
+            self.token = self.lex.next()
+            if (self.expression() == ERR): return ERR
+            if (self.token[VALUE] == "]"):
+                print("] read")
+                self.token = self.lex.next()
+            else:
+                print("] mising in assignment in line ", self.token[LINENUMBER])
+                return ERR
+        if (self.token[VALUE] == "="):
+            print("= read")
+            self.token = self.lex.next()
+            if (self.expression() == ERR): return ERR
+        else:
+            print("= missing from assignment in line ", self.token[LINENUMBER])
+            return ERR
         return BRK
+
+    def expression(self):
+        if (self.conjunction() == ERR): return ERR
+        while (True):
+            if (self.token[VALUE] == "|"):
+                print("| read")
+                self.token = self.lex.next()
+                if (self.token[VALUE] == "|"):
+                    print("| read")
+                    self.token = self.lex.next()
+                    if (self.conjunction() == ERR): return ERR
+                else:
+                    print("second | in expression missing in line ", self.token[LINENUMBER])
+                    return ERR
+            else:
+                break
+        return BRK
+
+    def conjunction(self):
+        if (self.equality() == ERR): return ERR
+        while (True):
+            if (self.token[VALUE] == "&"):
+                print("& read")
+                self.token = self.lex.next()
+                if (self.token[VALUE] == "&"):
+                    print("& read")
+                    self.token = self.lex.next()
+                    if (self.equality() == ERR): return ERR
+                else:
+                    print("second & in conjunction missing in line ", self.token[LINENUMBER])
+                    return ERR
+            else:
+                break
+
+        return BRK 
+
+    def equality(self):
+        if (self.relation() == ERR): return ERR
+        if (self.equOp() == CONT):
+            if (self.relation() == ERR): return ERR
+        return BRK
+        
+    def relation(self):
+        if (self.addition() == ERR): return ERR
+        if (self.relOp() == CONT):
+            if (self.addition() == ERR): return ERR
+        return BRK
+
+    def addition(self):
+        if (self.term() == ERR): return ERR
+        while (True):
+            if (self.addOp() == ERR): break
+            if (self.term() == ERR): return ERR
+
+        return BRK
+
+    def term(self):
+        if (self.factor() == ERR): return ERR
+        while (True):
+            if (self.mulOp() == ERR): break
+            if (self.factor() == ERR): return ERR
+        return BRK
+
+    def factor(self):
+        if (self.unaryOp() == ERR): pass
+        if (self.primary() == ERR): return ERR
+        return BRK
+
+    def unaryOp(self):
+        if (self.token[VALUE] == "-" or self.token[VALUE] == "!"):
+            print(self.token[VALUE], " read")
+            self.token = self.lex.next()
+            return CONT
+        else:
+            print("unary operator expected at line ", self.token[LINENUMBER])
+            return ERR
+
+    def primary(self):
+        if (self.identifier() == CONT):
+            if (self.token[VALUE] == "["):
+                print("[ read")
+                self.token = self.lex.next()
+                if (self.expression() == ERR): return ERR
+                if (self.token[VALUE] == "]"):
+                    print("] read")
+                    self.token = self.lex.next()
+                    return CONT
+                else:
+                    print("] mising in assignment in line ", self.token[LINENUMBER])
+                    return ERR
+        elif(self.literal() == CONT): return CONT
+        elif(self.token[VALUE] == "("):
+            print("( read in primary")
+            self.token = self.lex.next()
+            if (self.expression() == ERR): return ERR
+            if (self.token[VALUE] == ")"):
+                print(") read in primary")
+                self.token = self.lex.next()
+                return CONT
+            else:
+                print(") missing from primary at line ", self.token[LINENUMBER])
+                return ERR
+        elif(self.Type() == CONT):
+            if(self.token[VALUE] == "("):
+                print("( read in primary")
+                self.token = self.lex.next()
+                if (self.expression() == ERR): return ERR
+                if (self.token[VALUE] == ")"):
+                    print(") read in primary")
+                    self.token = self.lex.next()
+                    return CONT
+                else:
+                    print(") missing from primary at line ", self.token[LINENUMBER])
+                    return ERR
+            else:
+                print("( missing from primary at line ", self.token[LINENUMBER])
+                return ERR
+        #no option in primary was found
+        else:
+            print("primry expression failed, line ", self.token[LINENUMBER])
+            return ERR
+
+    def literal(self):
+        if (self.integer() == CONT): return CONT
+        elif (self.boolean() == CONT): return CONT
+        elif (self.Float() == CONT): return CONT
+        elif (self.char() == CONT): return CONT
+        else:
+            print("missing literal at line ", self.token[LINENUMBER])
+            return ERR
+
+    def mulOp(self):
+        if (self.token[VALUE] == "*" or self.token[VALUE] == "/" or self.token[VALUE] == "%"):
+            print(self.token[VALUE], " read")
+            self.token = self.lex.next()
+            return CONT
+        else:
+            print("multiplication operator expected at line ", self.token[LINENUMBER])
+            return ERR
+
+    def addOp(self):
+        if (self.token[VALUE] == "+" or self.token[VALUE] == "-"):
+            print(self.token[VALUE], " read")
+            self.token = self.lex.next()
+            return CONT
+        else:
+            print("addition operator expected at line ", self.token[LINENUMBER])
+            return ERR
+
+    def relOp(self):
+        if (self.token[VALUE] == "<" or self.token[VALUE] == "<=" or self.token[VALUE] == ">" or self.token[VALUE] == ">="):
+            print(self.token[VALUE], " read")
+            self.token = self.lex.next()
+            return CONT
+        else:
+            print("relative operator expected at line ", self.token[LINENUMBER])
+            return ERR
+
+    def equOp(self):
+        if (self.token[VALUE] == "==" or self.token[VALUE] == "!="):
+            print(self.token[VALUE], " read")
+            self.token = self.lex.next()
+            return CONT
+        else:
+            print("equallity operator expected at line ", self.token[LINENUMBER])
+            return ERR
 
     def ifStatement(self):
-        return BRK
+        if (self.token[VALUE] == "if"):
+            print("if read")
+            self.token = self.lex.next()
+            if (self.token[VALUE] == "("):
+                print("( read")
+                self.token = self.lex.next()
+                if (self.expression() == ERR): return ERR
+                if (self.token[VALUE] == ")"):
+                    print(") read")
+                    self.token = self.lex.next()
+                    if (self.statement() == ERR): return ERR
+                    if (self.token[VALUE] == "else"):
+                        print("else read")
+                        self.token = self.lex.next()
+                        if (self.statement() == ERR): return ERR
+                else:
+                    print("missing ')' in if statement at line ", self.token[LINENUMBER])
+            else:
+                print("missing '(' in if statement at line ", self.token[LINENUMBER])
+                return ERR
+        else:
+            print("'if' missing in if statement at line ", self.token[LINENUMBER])
+            return BRK
+        return CONT
 
     def whileStatement(self):
-        return BRK
+        if (self.token[VALUE] == "while"):
+            print("while read")
+            self.token = self.lex.next()
+            if (self.token[VALUE] == "("):
+                print("( read")
+                self.token = self.lex.next()
+                if (self.expression() == ERR): return ERR
+                if (self.token[VALUE] == ")"):
+                    print(") read")
+                    self.token = self.lex.next()
+                    if (self.statement() == ERR): return ERR
+                else:
+                    print("missing ')' in while statement at line ", self.token[LINENUMBER])
+            else:
+                print("missing '(' in while statement at line ", self.token[LINENUMBER])
+                return ERR
+        else:
+            print("'while' missing in while statement at line ", self.token[LINENUMBER])
+            return BRK
+        return CONT
+
+    '''
+    Not Currenlty used
+    '''
+    def letter(self):
+        return CONT
+
+    '''
+    Not Currently used
+    '''
+    def digit(self):
+        return CONT
