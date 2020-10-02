@@ -1,0 +1,40 @@
+int main() {
+    int x,y[5],z;
+    bool x,y[5],z;
+    float x,y[5],z;
+    char x,y[5],z;
+    x = 5;
+    y = 7;
+    z = 9;
+    {
+        w = 6
+    }
+    if (x > 7) {
+        count = count + 1
+        ;
+    }
+    while (true){
+
+    }
+    if ((((x-2) + 5 == 7))){
+        test = true;
+    }
+    else{
+        test = false;
+    }
+    unary_test1 = -int (value == 3.4)
+    while((x == 's' )||( y != 't' && z <=4 )||( a > 5 && b <3 )||( c >= 7))
+    if (x == "a")
+    c_array[6] = "b"
+    x = a * b / c + d - e % f
+    if (((((((((x == false)))))))))
+    {
+    unary_test2 = -int (value == 3.4)
+    unary_test3 = -int (value == 3.4)
+    {}{}{}
+    }
+
+    {
+        if(x==3
+    }
+}
