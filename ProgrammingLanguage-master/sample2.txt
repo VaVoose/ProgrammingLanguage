@@ -1,0 +1,14 @@
+int main(){
+    int x,y[3],z ;
+    int a,b[4],c;
+    ;
+    if (x == 3) {
+        x=5
+    }
+    else {
+        x=0
+    }
+    while (count < 5) {
+        count = count + 1
+    }
+}

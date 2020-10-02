@@ -1,0 +1,19 @@
+int main() {
+    int x,y[5],z;
+    int x,y[5],z;
+    int x,y[5],z;
+    int x,y[5],z;
+    x = 5
+    y = 7
+    z = 9
+    {
+        w = 6
+    }
+    if (x > 7) {
+        ;
+        ;
+    }
+    while (true){
+
+    }
+}

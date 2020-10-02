@@ -1,0 +1,8 @@
+int main () { 
+    int yesss [ 30 ] , x ; 
+    { ; 
+    ;
+}
+
+
+int main ( ) { int x ; }

@@ -1,0 +1,18 @@
+int main ( ) {
+
+	bool y1 ;
+	int x1 ;
+	
+	int 2y , // this is a comment
+
+	x1 = 3.78.0 ;
+	y1 = x1 >= 5
+
+	// another comment
+	
+	false = ! true
+
+	elsee if 
+	y1 = char
+ 
+} 
