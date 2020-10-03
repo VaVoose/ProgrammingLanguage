@@ -1,0 +1,35 @@
+int main () {
+    int x[6], y[7], z;
+    bool a[6], b[7], c;
+    float d[6], e[7], f;
+    char g[6], h[7], i, ;
+
+    if(x==3){
+        x[3] = 4;
+    }
+    x[2] = 8
+    ;
+    if (a[5] != true) {
+        y[1] = 19;
+    }
+    else{
+        
+    }
+    while (b[3] == false){
+        
+    }
+    if(a || b || (c && d)){
+        equality1[x==y && a != b] = true
+        relation1[(x>4) || ((a >= 4) && (b <= 4)) || (c < 0)] = 'A'
+    }
+    while(true){
+        z[4] = 5 - 3.83283 * (8/2) + -(92%3)
+        addition1 = (4 + 5) - 6
+        term1 = (4 * 5) + (20 / 4)
+    }
+    if (!true){
+        primary1_2 = b['c' || 3.4 || ((5 + 6) && false)]
+        primary3 = ('A')
+        primary4[int (x||y)] = 4;
+    }
+}
