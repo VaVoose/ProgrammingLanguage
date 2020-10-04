@@ -33,25 +33,26 @@ def main():
     while True:
         fileName = input("Please enter testing file: ")
         #attempt to open and read
-        try:
+        try:    
             f = open(fileName, 'r')
             break
         except:
             print("File not found/read")
 
-    #instantiate a lexer and print the file that it has
+    #instantiate a lexer
     lex = lexer.Lexer(f)
+
+    #instantiate the parser
     par = parse.Parse(lex)
 
-    result = par.program()
-    if (result == SUCCESS):
-        print("Finished Parsing Successfully")
-    elif(result == ERR):
-        print("Something went wrong with parsing, see above line")
+    #Run the Parser. The parser will crash with exit(0) if there is a parsing error and otherwise
+    #will return to the main to print a successful parse.
+    if (par.program()):
+        print("File was Successfully Parsed!!!!\n")
 
-
+'''
     #Below this is old code
-    print("\nRemaining Tokens")
+    print("\nRemaining Tokens (Not including current token)")
     
     print("Line #          Value          Token Category")
     print("---------------------------------------------")
@@ -61,7 +62,7 @@ def main():
         if (token == "EOF"): break
         
         print('{:<15} {:15} {:<20}'.format(token[0], token[1], token[2]))
-
+'''
 
 #Runs the main function first
 if __name__ == "__main__":

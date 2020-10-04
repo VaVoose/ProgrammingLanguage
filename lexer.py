@@ -48,7 +48,8 @@ KEYWORDS = {
     "else": "keyword",
     "true": "keyword",
     "false": "keyword",
-    "bool": "keyword"
+    "bool": "keyword",
+    "while": "keyword"
 }
 
 #Operator dictionary
@@ -80,7 +81,8 @@ PUNCTUATIONS = {
 #RegEx expressions for integers real numbers and identifiers
 INTEGERS = r"\d+$"
 REALNUMS = r"\d+\.\d+$"
-IDENTIFIER = r"[A-Za-z_]+[A-Za-z_0-9]*"
+IDENTIFIER = r"[A-Za-z_]+[A-Za-z_0-9]*$"
+CHAR = r"['\"]+[\d\D\w\W\s\S]?['\"]+$"
 
 class Lexer:
 
@@ -146,5 +148,7 @@ class Lexer:
             self.tokenQueue.append([self.lineNumber, word, "real"])
         elif(re.match(IDENTIFIER, word)):
             self.tokenQueue.append([self.lineNumber, word, "identifier"])
+        elif(re.match(CHAR, word)):
+            self.tokenQueue.append([self.lineNumber, word, "char"])
         else:
             self.tokenQueue.append([self.lineNumber, word, "unknown"])
